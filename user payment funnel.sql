@@ -38,4 +38,8 @@ SELECT   SUM (CASE
           num_payment_page/num_total AS rate_3,
           num_payment_confirm_page/num_total AS rate_4,
   FROM joined_table 
+/* use the paymentstatuslog table to get the payment funnel data for individuals who are under the new page test. Let's say the user_id is 310478*/
+SELECT user_id, status_id, time_in_status, 
+  LEAD(time_in_status) OVER (ORDER BY status_id) AS time_in_previous_status, (time_in_status-time_in_previous_status) AS time_diff
+FROM paymentstatuslog
 
