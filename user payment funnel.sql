@@ -1,5 +1,9 @@
-/* Collect users information from tables collected from each webpage*/
-/* Notice the sequence should be home_page_table, search_page_table, payment_page_table, payment_confirmation_table. And we have an extra user_table */
+/* skills used: JOINS, Window Functions, CTE, Aggregate Functions*/
+
+
+-- Collect users information from tables collected from each webpage*/
+-- Notice the sequence should be home_page_table, search_page_table, payment_page_table, payment_confirmation_table. And we have an extra user_table */
+-- Calculate the conversion rate
 
 WITH joined_table 
   AS (SELECT * 
@@ -13,6 +17,7 @@ WITH joined_table
       LEFT JOIN payment_confirmation_table pc
       ON u.user_id = pc.user_id
       ORDER BY u.user_id)
+  
 SELECT   SUM (CASE 
           WHEN u.page IS NOT NULL THEN 1
           ELSE 0
@@ -38,8 +43,10 @@ SELECT   SUM (CASE
           num_payment_page/num_total AS rate_3,
           num_payment_confirm_page/num_total AS rate_4,
   FROM joined_table 
-/* use the paymentstatuslog table to get the payment funnel data for individuals who are under the new page test. Let's say the user_id is 310478*/
-SELECT user_id, status_id, time_in_status, 
+  
+-- use the paymentstatuslog table to get the payment funnel data for individuals who are under the new page test. Let's say the user_id is 310478
+
+  SELECT user_id, status_id, time_in_status, 
   LEAD(time_in_status) OVER (ORDER BY status_id) AS time_in_previous_status, (time_in_status-time_in_previous_status) AS time_diff
 FROM paymentstatuslog
 
